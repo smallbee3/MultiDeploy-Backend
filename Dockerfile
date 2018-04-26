@@ -41,11 +41,23 @@ RUN			apt-get -y update
 RUN			apt-get -y dist-upgrade
 
 RUN			apt-get -y install nginx supervisor
+RUN     apt-get -y install git curl
+RUN     curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN     apt-get -y install nodejs
 
-# File copy
+
+# Backend File copy
 COPY		. /srv/backend
 WORKDIR		/srv/backend
 RUN			pip install -r requirements.txt
+
+# Frontend Settings
+WORKDIR /srv
+RUN     git clone https://github.com/Fastcampus-WPS-7th/MultiDeploy-Frontend.git frontend
+WORKDIR /srv/frontend
+RUN     npm install
+RUN     npm run build
+
 
 # Nginx settings
 RUN			rm -rf /etc/nginx/sites-enabled/*
